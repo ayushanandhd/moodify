@@ -1,0 +1,43 @@
+.navbar{
+    /* background-color: black; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 20vh;
+    color: white;
+    padding: 10px 10vh;
+    font-size: 4vh;
+}
+
+.logo {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 6vh;
+  }
+
+.logo:hover{
+    cursor: pointer;
+    color: #FFD700;
+}
+  
+
+.links{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.links a{
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.links a:hover{
+    color: #FFD700;
+}
+
+.links li{
+    list-style: none;
+}

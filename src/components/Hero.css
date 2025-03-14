@@ -1,0 +1,50 @@
+.hero-container{
+    /* background-color: black; */
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.input-container{
+    /* background-color: white; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 20vh;
+}
+
+.input-box{
+    background-color: transparent;
+    padding: 20px;
+    font-size: 3vh;
+    border-radius: 10px;
+    color: white;
+    border: 1px solid rgb(179, 179, 179);
+    width: 35vw;
+    margin: 5px;
+
+}
+
+.send-button{
+    background-color: transparent;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 3vh;
+    border: 1px solid rgb(179, 179, 179);
+}
+
+.send-button:hover{
+    cursor: pointer;
+    background-color: #103250;
+}
+
+
+.playlist-container{
+    /* background-color: white; */
+    height: 100%;
+    width: 45vw;
+    padding: 40px;;
+}
