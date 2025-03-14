@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import './Hero.css'
+import Song from "./Song";
+
 // const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -9,7 +11,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 export default function Hero() {
   const [prompt, setPrompt] = useState("");
-  const [playlists, setPlaylists] = useState('Your playlists will display here 🥰');
+  const [playlist, setPlaylist] = useState("your playlists will display here 🥰");
   const [IsDisabled, setIsDisabled] = useState(false);
 
   function handleChange(e){
@@ -18,31 +20,37 @@ export default function Hero() {
 
   async function handleClick(){
     setIsDisabled(true);
-
-    setPlaylists("Loading... ⌛")
-    // const aiprompt = `user-input: ${prompt} . the user has given input of how they are feeling or what their mood is. based on that you have to recommend the user some songs or a playlist of some songs that suits their mood or emotion. Only display the song name and the artist name, do not display any extra text at all. display the songs in bullet lists. make sure theres no unnecessary text. straight up display the songs.`;
+    setPlaylist("Loading... ⌛")
 
     const aiprompt = `
     The user has described their mood as: "${prompt}".  
-    Generate a list of songs that best match this mood.  
+    Generate an array of Spotify song URLs that best match this mood.
     
-    **Response Format:**  
-    - Each song must be displayed on a new line.  
-    - Include only the song name and the artist name.  
-    - Do NOT add any extra text, explanations, or descriptions.  
-    - Do NOT use any markup, emojis, or formatting—just plain text.  
+    **Response Format:**
+    - Return only a valid JSON array of Spotify song URLs.
+    - Do NOT include any text, explanations, descriptions, or formatting—just the raw array.
+    - Each URL should be a direct link to the song on Spotify.
+    - Provide a minimum of 8 and a maximum of 12 URLs.
+    - Make sure the URL is correct and working.
     
-    **Strict Formatting Example:**  
-    Song Name - Artist Name  
-    Second Song - Second Artist  
-    
-    Provide a minimum of 5 and a maximum of 10 songs.  
-    Ensure the recommendations are relevant and diverse.
+    **Strict Output Example:**
+    [
+      "https://open.spotify.com/track/1234567890abcdef",
+      "https://open.spotify.com/track/abcdef1234567890"
+    ]
     `;
+    
     
     const result = await model.generateContent(aiprompt);
 
-    setPlaylists(result.response.text())
+    // converting the result into a valid array of URLs
+    let playlistArr = JSON.parse(result.response.text().replace(/```json|```|json/g, "").trim());
+    console.log(playlistArr);
+    console.log(Array.isArray(playlistArr));
+
+    setPlaylist(playlistArr)
+    console.log(playlist)
+
     setPrompt('')
     setIsDisabled(false);
   }
@@ -54,7 +62,14 @@ export default function Hero() {
         <button disabled={IsDisabled} className="send-button" onClick={()=>{handleClick()}}> 🔥 </button>
       </div>
       <div className="playlist-container">
-        {playlists}
+
+
+      {Array.isArray(playlist) ? playlist.map((url, index) => (
+        <Song key={index} url={url} />
+      )) : playlist}
+
+      
+
       </div>
     </div>
   );
