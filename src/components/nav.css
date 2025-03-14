@@ -41,3 +41,11 @@
 .links li{
     list-style: none;
 }
+
+
+@media screen and (max-width: 500px){
+    .navbar{
+        flex-direction: column;
+    }
+    
+}

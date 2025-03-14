@@ -48,3 +48,35 @@
     width: 45vw;
     padding: 40px;;
 }
+
+@media screen and (max-width: 1000px){
+    .input-container{
+        width: 60vw;
+    }
+    .input-box{
+        width: 50vw;
+    }
+    .playlist-container{
+        width: 60vw;
+    }
+}
+
+
+@media screen and (max-width: 500px){
+    .input-container{
+        width: 80vw;
+        /* display: flex; */
+        flex-direction: column;
+        margin-top: 10vh;
+        margin-bottom: 5vh;
+    }
+    .playlist-container{
+        width: 80vw;
+        
+    }
+    .input-box{
+        width: 70vw;
+        margin-bottom: 2vh;
+    }
+    
+}
