@@ -9,7 +9,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 export default function Hero() {
   const [prompt, setPrompt] = useState("");
-  const [playlists, setPlaylists] = useState('Your playlists will display here');
+  const [playlists, setPlaylists] = useState('Your playlists will display here 🥰');
   const [IsDisabled, setIsDisabled] = useState(false);
 
   function handleChange(e){
@@ -19,9 +19,27 @@ export default function Hero() {
   async function handleClick(){
     setIsDisabled(true);
 
-    setPlaylists("Loading...")
-    const aiprompt = `user-input: ${prompt} . the user has given input of how they are feeling or what their mood is. based on that you have to recommend the user some songs or a playlist of some songs that suits their mood or emotion.`;
+    setPlaylists("Loading... ⌛")
+    // const aiprompt = `user-input: ${prompt} . the user has given input of how they are feeling or what their mood is. based on that you have to recommend the user some songs or a playlist of some songs that suits their mood or emotion. Only display the song name and the artist name, do not display any extra text at all. display the songs in bullet lists. make sure theres no unnecessary text. straight up display the songs.`;
 
+    const aiprompt = `
+    The user has described their mood as: "${prompt}".  
+    Generate a list of songs that best match this mood.  
+    
+    **Response Format:**  
+    - Each song must be displayed on a new line.  
+    - Include only the song name and the artist name.  
+    - Do NOT add any extra text, explanations, or descriptions.  
+    - Do NOT use any markup, emojis, or formatting—just plain text.  
+    
+    **Strict Formatting Example:**  
+    Song Name - Artist Name  
+    Second Song - Second Artist  
+    
+    Provide a minimum of 5 and a maximum of 10 songs.  
+    Ensure the recommendations are relevant and diverse.
+    `;
+    
     const result = await model.generateContent(aiprompt);
 
     setPlaylists(result.response.text())

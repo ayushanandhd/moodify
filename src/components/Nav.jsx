@@ -8,9 +8,9 @@ export default function Nav(){
             <span className="logo">MOODIFY</span>
 
             <ul className="links">
-                <li><a href=""> <FaInstagram /> </a></li>
-                <li><a href=""><FaTwitter /></a></li>
-                <li><a href=""><FaGithub /></a></li>
+                <li><a target='_blank' href="https://instagram.com/ayushanandhd"> <FaInstagram /> </a></li>
+                <li><a target='_blank' href="https://x.com/ayushanandhd"><FaTwitter /></a></li>
+                <li><a target='_blank' href="https://github.com/ayushanandhd/moodify"><FaGithub /></a></li>
             </ul>
         </div>
         </>
