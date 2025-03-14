@@ -24,32 +24,30 @@ export default function Hero() {
 
     const aiprompt = `
     The user has described their mood as: "${prompt}".  
-    Generate an array of Spotify song URLs that best match this mood.
+    Generate a list of songs that best match this mood.  
     
-    **Response Format:**
-    - Return only a valid JSON array of Spotify song URLs.
-    - Do NOT include any text, explanations, descriptions, or formatting—just the raw array.
-    - Each URL should be a direct link to the song on Spotify.
-    - Provide a minimum of 8 and a maximum of 12 URLs.
-    - Make sure the URL is correct and working.
+    **Response Format:**  
+    - Each song must be displayed on a new line.  
+    - Include only the song name and the artist name.  
+    - Do NOT add any extra text, explanations, or descriptions.  
+    - Do NOT use any markup, emojis, or formatting—just plain text.  
     
-    **Strict Output Example:**
-    [
-      "https://open.spotify.com/track/1234567890abcdef",
-      "https://open.spotify.com/track/abcdef1234567890"
-    ]
+    **Strict Formatting Example:**  
+    Song Name - Artist Name  
+    Second Song - Second Artist  
+    
+    Provide a minimum of 5 and a maximum of 10 songs.  
+    Ensure the recommendations are relevant and diverse.
     `;
+    
     
     
     const result = await model.generateContent(aiprompt);
 
-    // converting the result into a valid array of URLs
-    let playlistArr = JSON.parse(result.response.text().replace(/```json|```|json/g, "").trim());
-    console.log(playlistArr);
-    console.log(Array.isArray(playlistArr));
 
-    setPlaylist(playlistArr)
-    console.log(playlist)
+
+    setPlaylist(result.response.text())
+    
 
     setPrompt('')
     setIsDisabled(false);
