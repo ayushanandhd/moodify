@@ -9,7 +9,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 export default function Hero() {
   const [prompt, setPrompt] = useState("");
-  const [playlist, setPlaylist] = useState("your playlist will display here 🥰");
+  const [playlist, setPlaylist] = useState("Tell us how you're feeling and we'll generate a playlist for you! 😼");
   const [IsDisabled, setIsDisabled] = useState(false);
 
   // spotify api code
@@ -88,7 +88,7 @@ export default function Hero() {
     );
 
     const resultArr = await Promise.all(songUrls);
-    
+
     setPlaylist(resultArr)
     console.log(songsArr)
     
