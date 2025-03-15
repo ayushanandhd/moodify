@@ -5,7 +5,8 @@ export default function Song({ url }) {
     const embedUrl = url.replace("open.spotify.com", "open.spotify.com/embed");
 
     return (
-        <iframe 
+        <iframe
+            className="song-embed"
             style={{ borderRadius: "12px" }} 
             src={embedUrl} 
             width="100%" 
