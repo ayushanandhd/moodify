@@ -11,7 +11,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
 export default function Hero() {
   const [prompt, setPrompt] = useState("");
-  const [playlist, setPlaylist] = useState("your playlists will display here 🥰");
+  const [playlist, setPlaylist] = useState("your playlist will display here 🥰");
   const [IsDisabled, setIsDisabled] = useState(false);
 
   function handleChange(e){
