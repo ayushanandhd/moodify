@@ -51,7 +51,7 @@ export default function Hero() {
     }
   };
   
-  
+
   // end spotify api code
 
   function handleChange(e){
@@ -99,7 +99,7 @@ export default function Hero() {
   return (
     <div className="hero-container">
       <div className="input-container">
-        <input className="input-box" type="text" placeholder="Explain your mood 👀" value={prompt} onChange={(e)=>{handleChange(e)}} />
+        <input className="input-box" type="text" placeholder="Explain your mood 👀" value={prompt} onChange={(e)=>{handleChange(e)}} onKeyDown={(e) => e.key === "Enter" && handleClick()}/>
         <button disabled={IsDisabled} className="send-button" onClick={()=>{handleClick()}}> 🔥 </button>
       </div>
       <div className="playlist-container">
