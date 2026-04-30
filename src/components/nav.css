@@ -1,51 +1,69 @@
-.navbar{
-    /* background-color: black; */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 20vh;
-    color: white;
-    padding: 10px 10vh;
-    font-size: 4vh;
+/* ===== Glassmorphic Navbar ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md) var(--space-xl);
+  height: 56px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeIn var(--duration-normal) var(--ease-out);
 }
 
+/* ===== Logo ===== */
 .logo {
-    font-family: "Anton", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    font-size: 6vh;
+  font-family: var(--font-logo);
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.4rem;
+  letter-spacing: 2px;
+  color: var(--color-text-primary);
+  transition: all var(--duration-normal) var(--ease-out);
+  user-select: none;
+}
+
+.logo:hover {
+  cursor: pointer;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.15);
+}
+
+/* ===== Social Links ===== */
+.links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.links li {
+  list-style: none;
+}
+
+.links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.links a:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+  transform: scale(1.1);
+}
+
+/* ===== Responsive ===== */
+@media screen and (max-width: 500px) {
+  .navbar {
+    padding: var(--space-md) var(--space-lg);
   }
-
-.logo:hover{
-    cursor: pointer;
-    color: #FFD700;
-}
-  
-
-.links{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.links a{
-    color: white;
-    text-decoration: none;
-    margin: 0 10px;
-}
-
-.links a:hover{
-    color: #FFD700;
-}
-
-.links li{
-    list-style: none;
-}
-
-
-@media screen and (max-width: 500px){
-    .navbar{
-        flex-direction: column;
-    }
-    
 }
