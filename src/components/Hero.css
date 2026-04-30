@@ -180,10 +180,13 @@
 
 /* ===== Song Cards ===== */
 .song-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm);
   background: var(--color-glass);
   border: 1px solid var(--color-glass-border);
   border-radius: var(--radius-lg);
-  overflow: hidden;
   margin-bottom: var(--space-md);
   transition: all var(--duration-normal) var(--ease-out);
   animation: fadeInUp var(--duration-slow) var(--ease-out) both;
@@ -196,26 +199,92 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
-.song-card iframe {
-  display: block;
+/* Artwork */
+.song-artwork-wrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.song-artwork {
   width: 100%;
-  border: none;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--duration-normal) var(--ease-out);
 }
 
-/* ===== Footer ===== */
-.footer {
-  text-align: center;
-  padding: var(--space-2xl) var(--space-lg);
-  color: var(--color-text-tertiary);
-  font-size: 0.8rem;
-  letter-spacing: 0.02em;
-  animation: fadeIn var(--duration-slow) var(--ease-out);
+.song-artwork-wrapper:hover .song-artwork {
+  transform: scale(1.05);
 }
 
-.footer-heart {
-  display: inline-block;
-  color: #ec4899;
-  animation: pulse 2s ease-in-out infinite;
+/* Play overlay */
+.song-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.song-artwork-wrapper:hover .song-play-overlay,
+.song-play-overlay.playing {
+  opacity: 1;
+}
+
+/* Song info */
+.song-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.song-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-artist {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Apple Music link */
+.song-apple-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.song-apple-link:hover {
+  color: var(--color-text-primary);
+  background: var(--color-surface-hover);
+  transform: scale(1.1);
 }
 
 /* ===== Responsive ===== */
@@ -249,5 +318,18 @@
 
   .playlist-container {
     padding: var(--space-lg) 0;
+  }
+
+  .song-artwork-wrapper {
+    width: 56px;
+    height: 56px;
+  }
+
+  .song-title {
+    font-size: 0.88rem;
+  }
+
+  .song-artist {
+    font-size: 0.78rem;
   }
 }

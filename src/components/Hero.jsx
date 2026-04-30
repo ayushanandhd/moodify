@@ -4,7 +4,7 @@ import './Hero.css'
 import Song from "./Song";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-3.1-flash-lite-preview" });
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 
 export default function Hero() {
@@ -13,63 +13,45 @@ export default function Hero() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // spotify api code
+  // Apple Music search via iTunes API (no auth needed)
+  const searchTrack = async (songName, artistName) => {
+    try {
+      const query = `${songName} ${artistName}`;
+      const response = await fetch(
+        `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=1`
+      );
 
-  const getSpotifyToken = async () => {
-    const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-    const clientSecret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
-  
-    const response = await fetch("https://accounts.spotify.com/api/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${btoa(clientId + ":" + clientSecret)}`,
-      },
-      body: "grant_type=client_credentials",
-    });
-  
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Spotify token error:", response.status, errorText);
-      throw new Error(`Failed to get Spotify token: ${response.status} - ${errorText}`);
-    }
-
-    const data = await response.json();
-    return data.access_token;
-  };
-
-  const searchTrack = async (songName, token) => {
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${encodeURIComponent(songName)}&type=track&limit=1`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      if (!response.ok) {
+        console.error(`iTunes search error for "${query}":`, response.status);
+        return null;
       }
-    );
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`Spotify search error for "${songName}":`, response.status, errorText);
-      return "Track not found";
-    }
-  
-    const data = await response.json();
-    if (data.tracks && data.tracks.items.length > 0) {
-      return data.tracks.items[0].external_urls.spotify;
-    } else {
-      return "Track not found";
+      const data = await response.json();
+      if (data.resultCount > 0) {
+        const track = data.results[0];
+        // Get high-res artwork by replacing size in URL
+        const artworkHiRes = track.artworkUrl100.replace("100x100", "600x600");
+        return {
+          trackUrl: track.trackViewUrl,
+          trackName: track.trackName,
+          artistName: track.artistName,
+          albumName: track.collectionName,
+          artwork: artworkHiRes,
+          previewUrl: track.previewUrl,
+        };
+      }
+      return null;
+    } catch (err) {
+      console.error(`Error searching "${songName}":`, err);
+      return null;
     }
   };
-  
 
-  // end spotify api code
-
-  function handleChange(e){
-    setPrompt(e.target.value)
+  function handleChange(e) {
+    setPrompt(e.target.value);
   }
 
-  async function handleClick(){
+  async function handleClick() {
     if (!prompt.trim()) return;
     setIsLoading(true);
     setPlaylist(null);
@@ -81,36 +63,41 @@ export default function Hero() {
       Generate a list of songs that best match this mood.  
       
       **Response Format:**  
-      - Return the output as a valid JavaScript array.  
-      - Each item in the array must be a string in the format: "Song Name Artist Name" note that theres no "by" after the song name.  
-      - Do NOT include any explanations, descriptions, or extra text—only return the array.  
-      - Ensure the response is properly formatted as JSON.  
+      - Return the output as a valid JSON array of objects.
+      - Each object must have exactly two keys: "title" (song name) and "artist" (artist name).
+      - Do NOT include any explanations, descriptions, markdown formatting, or extra text—only return the JSON array.
       
       **Example Output:**  
-      ["Intentions Justin Bieber", "Shape of You Ed Sheeran", "Blinding Lights The Weeknd"]
+      [{"title": "Blinding Lights", "artist": "The Weeknd"}, {"title": "Shape of You", "artist": "Ed Sheeran"}]
       
-      Provide a minimum of 5 and a maximum of 10 songs.
+      Provide exactly 10 songs.
       `;
-       
+
       const result = await model.generateContent(aiprompt);
+      const responseText = result.response.text().replace(/```json|```/g, "").trim();
+      const songsArr = JSON.parse(responseText);
 
-      const songsArr = JSON.parse(result.response.text().replace(/```json|```/g, "").trim());
+      console.log("AI suggested:", songsArr);
 
-      // Fetch token ONCE and reuse for all searches
-      const token = await getSpotifyToken();
+      // Search all songs in parallel via iTunes API
+      const trackPromises = songsArr.map((song) =>
+        searchTrack(song.title, song.artist)
+      );
 
-      const songUrls = songsArr.map((song) => searchTrack(song, token));
+      const tracks = await Promise.all(trackPromises);
+      const validTracks = tracks.filter((t) => t !== null);
 
-      const resultArr = await Promise.all(songUrls);
-
-      setPlaylist(resultArr);
-      console.log(songsArr);
+      if (validTracks.length === 0) {
+        setError("Couldn't find any tracks. Try a different mood!");
+      } else {
+        setPlaylist(validTracks);
+      }
     } catch (err) {
       console.error("Error generating playlist:", err);
       setError("Something went wrong. Please try again.");
     }
-    
-    setPrompt('');
+
+    setPrompt("");
     setIsLoading(false);
   }
 
@@ -138,8 +125,8 @@ export default function Hero() {
     }
 
     if (playlist) {
-      return playlist.map((url, index) => (
-        <Song key={index} url={url} index={index} />
+      return playlist.map((track, index) => (
+        <Song key={index} track={track} index={index} />
       ));
     }
 
@@ -156,17 +143,17 @@ export default function Hero() {
       </div>
 
       <div className="input-container">
-        <input 
-          className="input-box" 
-          type="text" 
-          placeholder="I'm feeling nostalgic..." 
-          value={prompt} 
-          onChange={handleChange} 
+        <input
+          className="input-box"
+          type="text"
+          placeholder="I'm feeling nostalgic..."
+          value={prompt}
+          onChange={handleChange}
           onKeyDown={(e) => e.key === "Enter" && handleClick()}
         />
-        <button 
-          disabled={isLoading || !prompt.trim()} 
-          className="send-button" 
+        <button
+          disabled={isLoading || !prompt.trim()}
+          className="send-button"
           onClick={handleClick}
           aria-label="Generate playlist"
         >
